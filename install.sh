@@ -12,8 +12,12 @@ function usage() {
 	options:
   -v | --vundle 
 			install Vundle
-	-g | --git
+	-g | --git 
 			copy from OS to git for pushing	
+	-i | --install
+      install vim 9 on ubuntu (install repo, update packets, install vim 9)
+  -n | --notcopy
+      Do not copy vimrc from git to home
 	"
 }
 
@@ -28,6 +32,26 @@ function copy() {
 	cp -f ~/.vimrc $SCRIPT_DIR/
 }
 
+function installvim9() {
+  OSVERS=$(cat /etc/*-release | awk -F'=' '/DISTRIB_ID/ { print $2}')
+	case $OSVERS in
+	  "Ubuntu")
+      sudo add-apt-repository ppa:jonathonf/vim
+      sudo apt -y update
+      sudo apt -y install vim
+			;;
+	  *)
+			echo "do not support others distributives"
+			;;
+		esac
+}
+
+function installvimrc() {
+  [[ -z $DONOTCOPY ]] && cp -f ${SCRIPT_DIR}/.vimrc ~/
+  vim +PluginInstall +qall
+  # git clone https://github.com/Shougo/neocomplete.vim.git ~/vim/
+}
+
 # parse arguments
 while (($#)); do
   case $1 in
@@ -38,9 +62,19 @@ while (($#)); do
 			vundle
 			shift
 			;;
-		"-g" | "--git"
+		"-g" | "--git")
 		  copy
-			GIT=true
+			DONOTCOPY=true
+			shift
+			;;
+		"-i" | "--install")
+		  installvim9
+			shift
+			;;
+    "-n" | "--notcopy")
+      DONOTCOPY=true
+      shift
+      ;;
 		*)
 			usage
 			shift
@@ -49,6 +83,5 @@ while (($#)); do
 done
 
 # install vimrc
-[[ -z $GIT ]] && cp -f ${SCRIPT_DIR}/.vimrc ~/
 
 

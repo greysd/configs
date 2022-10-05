@@ -20,8 +20,13 @@ set autowrite
 " indent settings
 filetype plugin indent on
 set tabstop=2
+set shiftwidth=2
 set softtabstop=2
+set expandtab
+set autoindent
 set smartindent
+set cindent
+set pastetoggle=<f5>
 
 " nerdtree settings
 nnoremap <leader>n :NERDTreeFocus<CR>
