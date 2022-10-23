@@ -68,11 +68,13 @@ function installvimrc() {
 
 function installcolors() {
   TMPDIR=~/tmp
-  mkdir $TMPDIR
+  [[ ! -d $TMPDIR ]] && DELETE=yes && mkdir $TMPDIR
   pushd $TMPDIR
+  [[ -d $TMPDIR/vim-colorschemes ]] && rm -rf $TMPDIR/vim-colorschemes
   git clone https://github.com/flazz/vim-colorschemes.git
-  cp vim-colorschemes/colors/* ~/.vim/colors
+  cp -r vim-colorschemes/colors ~/.vim/colors
   popd
+  [[ ! -z $TMPDIR ]] && rm -rf $TMPDIR 
 }
 
 function installlight() {
